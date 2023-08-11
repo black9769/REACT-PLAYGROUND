@@ -8,8 +8,8 @@ function App() {
     const [data, setData] = useState(null);
     const onClick = () => {
         axios.get('/api/test').then(response => {
-            setData(response.data[0].city);
-            console.log(response.data[0].city)
+            setData(response.data);
+
         });
 
     }
