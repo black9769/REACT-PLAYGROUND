@@ -1,0 +1,45 @@
+name: Deploy React App
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  Build_and_Deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Check Node v
+        run: node -v
+
+      - name: Install Dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm install --frozen-lockfile
+
+      - name: Generate BUILD
+        run: npm run build
+
+      - name: Deploy BUILD
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_NAME }}
+          password: ${{ secrets.FTP_PWD }}
+          port: ${{ secrets.FTP_PORT }}
+          source: "build"
+          target: '/home/black9769/fe'
+
+      - name: Deploy Confirm
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_NAME }}
+          password: ${{ secrets.FTP_PWD }}
+          port: ${{ secrets.FTP_PORT }}
+          script: |
+           cd /home/black9769/fe
+           echo -e "`ls -al | grep build`\n"
