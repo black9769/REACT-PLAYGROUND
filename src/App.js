@@ -7,9 +7,11 @@ import {Button} from "@mui/material";
 function App() {
     const [data, setData] = useState(null);
     const onClick = () => {
-        axios.get('http://localhost:1789/api/test').then(reponse => {
-            setData(reponse.data);
+        axios.get('/api/test').then(response => {
+            setData(response.data[0].city);
+            console.log(response.data[0].city)
         });
+
     }
     return (
         <div className="App">
